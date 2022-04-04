@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
+import {BrowserRouter, Route, Routes, Link, useNavigate} from 'react-router-dom'
 import { useParams } from 'react-router-dom';
 
 
@@ -32,28 +32,89 @@ const Home = (props) => {
     </div>
   )}
 
-  const Location = (props) => { 
-    const { city } = useParams();
-      
-    return (
-      <h1>Welcome to { city }!</h1>
-    );
+const Location = (props) => { 
+  const { city } = useParams();
+    
+  return (
+    <h1>Welcome to { city }!</h1>
+  );
+}
+const Colored = (props) => {
+  const {blue , red} = useParams() 
+  const style = {
+    backgroundColor: `${red}`,
+    color: `${blue}`
   }
-  const Colored = (props) => {
-    const {blue , red} = useParams() 
-    const style = {
-      backgroundColor: `${red}`,
-      color: `${blue}`
-    }
-    return(
-      <h1 style={style}>Hello</h1>
-    )
+  return(
+    <h1 style={style}>Hello</h1>
+  )
+}
+
+
+const Form = (props) => {
+  const [bgColor, setBgColor] = useState('')
+  const [str, setStr] = useState('')
+  const [color, setColor] = useState('')
+  const [int, setInt] = useState('')
+  const navigate = useNavigate();
+
+  const handleBgColor = (e) => {
+      setBgColor(e.target.value)
   }
+  const handleColor = (e) => {
+    console.log(e.target.value)
+      setColor(e.target.value)
+      console.log(color)
+  }
+  const handleStr = (e) => {
+
+      setStr(e.target.value)
+  }
+  const handleInt = (e) => {
+      setInt(e.target.value)
+  }
+
+  const sendSurvy = (e) =>{
+      e.preventDefault();
+      console.log(bgColor)
+      navigate(`/${str}/${color}/${bgColor}`)
+
+  }
+
+  return(
+      <form onSubmit={sendSurvy}>
+          <label>BgColor</label>
+          <input type='text' value={bgColor} onChange={handleBgColor}></input>
+          <br></br>
+          <label>Color</label>
+          <input type='text' value={color} onChange={handleColor}></input>
+          <br></br>
+          <label>String</label>
+          <input type='text' value={str} onChange={handleStr}></input>
+          <br></br>
+          <label>integer</label>
+          <input type='number' value={int} onChange={handleInt}></input>
+          <br></br>
+          <button type='submit'>Submit</button>
+      </form>
+  )
+}
+const Formed = (props) =>{
+  const {str, blue, red} = useParams()
+  const style = {
+    backgroundColor: `${red}`,
+    color: `${blue}`
+  }
+  return(
+    <h1 style={style}>{str}</h1>
+  )
+}
 
 function App() {
 
   return (
     <BrowserRouter>
+    <Form/>
       <p>
       <Link to= '/selected/1'>1</Link>
         |
@@ -100,6 +161,7 @@ function App() {
         <Route path="/location/:city" element={<Location />}/>
         <Route path='/:word' element={<Stringer/>}/>
         <Route path='/hello/:blue/:red' element={<Colored/>}/>
+        <Route path='/:str/:blue/:red' element={<Formed/>}/>
       </Routes>
     </BrowserRouter>
   );
